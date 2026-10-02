@@ -1,9 +1,9 @@
 import formatoMoneda from "../utils/formatoMoneda.js";
 import productImages from "../utils/productImages.js";
 
-function ProductCard({ producto, addToCart }) {
+function ProductCard({ producto, enElCarrito, addToCart, removeFromCart }) {
     const {
-        sku:id,
+        sku: id,
         nombre,
         categoria,
         precio,
@@ -30,8 +30,17 @@ function ProductCard({ producto, addToCart }) {
                     <p className="card-text py-2">{descripcion}</p>
                     <div className="product-actions">
                         <a href="#" className="btn btn-light border-primary">Ir al producto</a>
-                        <button onClick={() => addToCart(producto)} 
-                            id={id} className="btn btn-primary boton-agregar-al-carro">Agregar al carro</button>
+                        {enElCarrito ? (
+                            <button onClick={() => {
+                                removeFromCart(id);
+                            }}
+                                id={id} className="btn btn-danger boton-agregar-al-carro">Eliminar del carro</button>
+                        ) : (
+                            <button onClick={() => {
+                                addToCart(producto);
+                            }}
+                                id={id} className="btn btn-primary boton-agregar-al-carro">Agregar al carro</button>
+                        )}
                     </div>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-function Header() {
+function Header({cart}) {
+    // Se usa useState para controlar la expansion o colapso de la barra de navegacion en pantallas pequeñas
     const [isOpen, setIsOpen] = useState(false)
 
     return (
@@ -50,7 +51,8 @@ function Header() {
                                 d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
                         </svg>
                         <span id="badge-carrito" className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            0
+                            {/*Mostrar numero de productos en el carrito usando un badge*/ }
+                            {cart.length}
                             <span className="visually-hidden">Elementos en el carrito</span>
                         </span>
                     </a>

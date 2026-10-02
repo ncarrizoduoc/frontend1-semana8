@@ -15,7 +15,7 @@ function Cart({ cart, removeFromCart }) {
                 <div className="row g-4">
                     <ul id="carrito-compras" className="list-group col-12 col-lg-8 mb-3">
                         {cart.map((item) => (
-                            <CarritoCard key={item.itemId} item={item} removeFromCart={removeFromCart}/>
+                            <CarritoCard key={item.sku} item={item} removeFromCart={removeFromCart}/>
                         ))}
                     </ul>
                     <div className="col-12 col-lg-4">

@@ -3,7 +3,7 @@ import productImages from "../utils/productImages.js";
 
 function CarritoCard({ item, removeFromCart }) {
     const {
-        itemId: id,
+        sku: id,
         nombre,
         categoria,
         precio

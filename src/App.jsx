@@ -7,10 +7,11 @@ import Carrusel from './components/Carrusel'
 import Productos from './components/Products'
 import Carrito from './components/Carrito'
 
-const STORAGE_KEY = 'gamestore-carrito'
+const STORAGE_KEY = 'gamestore-carrito';
+const SOURCE_PRODUCTOS = `${import.meta.env.BASE_URL}data/productos.json`;
 
 function loadCart() {
-  try{
+  try {
     const carrito_productos = JSON.parse(localStorage.getItem(STORAGE_KEY));
     return Array.isArray(carrito_productos) ? carrito_productos : [];
   } catch {
@@ -21,34 +22,73 @@ function loadCart() {
 function App() {
 
   const [cart, setCart] = useState(loadCart());
+  const [productos, setProductos] = useState([]);
+  const [error, setError] = useState(null);
+  const [cargando, setCargando] = useState(true);
 
+  // Guardar carrito en LocalStorage cada vez que cambie
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
   }, [cart])
 
   // Agregar producto al carrito
   const addToCart = (product) => {
-    const cartItem = {
-      ...product, // Copia del producto
-      itemId: crypto.randomUUID(), //Asignar ID único a la instancia del producto
-    };
+    if (!cart.some(item => item.sku === product.sku)) {
+      const cartItem = {
+        ...product, // Copia del producto
+        itemId: product.sku, //Asignar SKU como ID del producto en el carrito
+      };
 
-    setCart((currentCart) => [...currentCart, cartItem]);
+      setCart((currentCart) => [...currentCart, cartItem]);
+    }
   };
 
   // Eliminar producto del carrito
   const removeFromCart = (productoId) => {
-    setCart((currentCart) => currentCart.filter(item => item.itemId !== productoId))
+    setCart((currentCart) => currentCart.filter(item => item.sku !== productoId))
   }
+
+  useEffect(() => {
+    // Cargar productos desde el archivo JSON
+    fetch(SOURCE_PRODUCTOS)
+      .then(response => response.json())
+      .then(data => {
+        setProductos(data);
+        setCargando(false);
+      })
+      .catch(error => {
+        console.error('Error al cargar los productos:', error);
+        setError(error.message);
+        setCargando(false);
+      });
+  }, []);
+
 
   return (
     <>
-      <Header />
+      <Header cart={cart} />
       <main>
         <Hero />
         <Carrusel />
-        <Productos addToCart={addToCart}/>
-        <Carrito cart={cart} removeFromCart={removeFromCart}/>
+
+        {/* Mostrar mensaje mientras se cargan los productos */}
+        {cargando && !error && (
+          <p className="text-center">Cargando productos...</p>
+        )}
+        {/* Mostrar mensaje de error si falla la carga de productos */}
+        {error && (
+          <p className="text-danger text-center">Error al cargar los productos: {error}</p>
+        )}
+        {/* Mostrar productos si se cargaron correctamente */}
+        {!error && !cargando && (
+          <Productos
+            productos={productos}
+            cart={cart}
+            addToCart={addToCart}
+            removeFromCart={removeFromCart}
+          />
+        )}
+        <Carrito cart={cart} removeFromCart={removeFromCart} />
       </main>
       <Footer />
     </>
